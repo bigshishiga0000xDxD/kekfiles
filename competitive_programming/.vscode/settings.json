@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "tuple": "cpp",
+        "iosfwd": "cpp",
+        "numeric": "cpp",
+        "iomanip": "cpp",
+        "chrono": "cpp",
+        "type_traits": "cpp",
+        "typeinfo": "cpp",
+        "bitset": "cpp",
+        "algorithm": "cpp"
+    },
+    "codestats.username": "aayyk"
+}
