@@ -90,7 +90,12 @@ generate: generate.o
 check: check.o
 	g++ check.o -o check.out" > Stress
 
-    make -s -f Stress    
+    make -s -f Stress
+    if [[ "$?" == "2" ]]
+    then
+        echo "compilation failed"
+        exit 2
+    fi
 
     function runCheck {
         it=1
@@ -103,6 +108,7 @@ check: check.o
             if [ "$?" == "0" ]
             then
                 ((it=it+1))
+                echo -en "\riteration $it"
             else
                 echo "error found after $it iterations. check out input.txt and output.txt"
                 break
@@ -117,7 +123,7 @@ check: check.o
 
     if [ "$?" == "124" ]
     then
-        echo "error not found."
+        echo "error not found"
     fi
     
     rm generate.out main.out check.out
@@ -143,6 +149,11 @@ generate: generate.o
 	g++ generate.o -o generate.out" > Stress
 
     make -s -f Stress
+    if [[ "$?" == "2" ]]
+    then
+        echo "compilation failed"
+        exit 2
+    fi
 
     function runRegular {
         it=1
@@ -155,6 +166,7 @@ generate: generate.o
             if (diff output.txt ans.txt)
             then
                 ((it=it+1))
+                echo -en "\riteration $it"
             else
                 echo "error found after $it iterations. check out input.txt, output.txt and ans.txt"
                 break
@@ -169,7 +181,7 @@ generate: generate.o
 
     if [ "$?" == "124" ]
     then
-        echo "error not found."
+        echo "error not found"
     fi
 
     rm generate.out main.out dumb.out

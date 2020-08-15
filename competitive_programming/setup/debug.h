@@ -1,7 +1,9 @@
 #pragma once 
 
 #include <type_traits>
-#include <ostream>
+#include <iostream>
+#include <queue>
+#include <deque>
 
 
 #define debug(x...) std::cout << #x << " = "; _print(x); std::cout << endl;
@@ -16,6 +18,27 @@ void _print(T t, V... v) {
     _print(v...);
 }
 
+template <typename Ostream, typename T>
+Ostream& operator<<(Ostream& os, std::queue <T> q) {
+    std::vector <T> v;
+    while (!q.empty()) {
+        v.push_back(q.front());
+        q.pop();
+    }
+    os << v;
+    return os;
+}
+
+template <typename Ostream, typename T>
+Ostream& operator<<(Ostream& os, std::deque <T> q) {
+    std::vector <T> v;
+    while (!q.empty()) {
+        v.push_back(q.front());
+        q.pop();
+    }
+    os << v;
+    return os;
+}
 
 template<typename Ostream, typename Cont>
 typename std::enable_if <std::is_same <Ostream, std::ostream>::value, Ostream&>::type 
@@ -34,6 +57,8 @@ operator<<(Ostream& os, const Cont& v){
     return os << "]";
 
 }
+
+
 
 
 template<typename Ostream, typename ...Ts>
