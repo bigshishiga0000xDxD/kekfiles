@@ -1,10 +1,6 @@
 #pragma once 
 
-#include <type_traits>
-#include <iostream>
-#include <queue>
-#include <deque>
-
+#include <bits/stdc++.h>
 
 #define debug(x...) std::cout << #x << " = "; _print(x); std::cout << endl;
 

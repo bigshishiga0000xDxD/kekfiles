@@ -1,28 +1,7 @@
-﻿#include <iostream>
-#include <iomanip>
-#include <cstdlib>
-#include <algorithm>
-#include <vector>
-#include <queue>
-#include <stack>
-#include <climits>
-#include <string>
-#include <set>
-#include <cmath>
-#include <map>
-#include <unordered_map>
-#include <numeric>
-#include <random>
-#include <memory>
-#include <chrono>
-#include <functional>
-#include <unordered_set>
-#include <cstring>
-#include <cassert>
-#include <bitset>
-#ifdef LOCAL
+﻿#ifdef LOCAL
 #include "debug.h"
 #else
+#include <bits/stdc++.h>
 #define debug(x...)
 #endif
 
@@ -43,12 +22,11 @@ mt19937 rng(1000 - 7);
 
 const int N = 1e5 + 10;
 const int M = 1e3 + 10;
-const int inf = INT_MAX / 2;
-const ll INF = LLONG_MAX / 3;
 const int MOD = 998244353;
 //const int MOD = 1e9 + 7;
 const ld eps = 1e-6;
 const pii dir[] = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+
 
 
 signed main() {
