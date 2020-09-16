@@ -8,7 +8,11 @@ struct Point {
     bool operator==(const Point <T>& s) {
         return x == s.x && y == s.y;
     }
- 
+
+    bool operator!=(const Point <T>& s) {
+        return x != s.x || y != s.y;
+    }
+
     bool operator<(const Point <T>& s) {
         if (x != s.x) {
             return x < s.x;
@@ -131,6 +135,11 @@ struct Line {
         b = e.x - p.x;
         c = p.x * e.y - e.x * p.y;
     }
+
+    template <typename V>
+    bool belongs(Point <V> p) {
+        return abs(a * p.x + b * p.y + c) < eps;
+    }
  
     void normalize() {
         T t = sqrt(a * a + b * b);
@@ -196,3 +205,49 @@ bool IntoAngle(Point <T> a, Point <T> o, Point <T> b, // angle
     }
     return false;
 }
+
+template <typename T>
+vector <Point <T>> _ConvexHull(typename vector <Point <T>> :: iterator __first,
+       typename vector <Point <T>> :: iterator __last) {
+    vector <Point <T>> res;
+
+    for (; __first < __last; __first++) {
+        while (res.size() >= 2) {
+            Point <T> q = res.back();
+            Point <T> w = res[res.size() - 2];
+            Point <T> e = *__first;
+            if (pscal<T>({ q, w }, { q, e }) >= 0) {
+                res.pop_back();
+            }
+            else {
+                break;
+            }
+        }
+        res.push_back(*__first);
+    }
+    return res;
+}
+
+template <typename T>
+Point <T> RadialSort(typename vector <Point <T>> :: iterator __first, 
+        typename vector <Point <T>> :: iterator __last) {
+    Point m = *min_element(__first, __last);
+
+    sort(__first, __last, [m](Point <T> x, Point <T> y) {
+        Vector <T> f = { m, x }, s = { m, y };
+        if (pscal<T>(f, s) == 0) {
+            return f.len() < s.len();
+        }
+        return pscal<T>(f, s) > 0;
+    });
+
+    return m;
+}
+
+template <typename T>
+vector <Point <T>> ConvexHull(typename vector <Point <T>> :: iterator __first,
+        typename vector <Point <T>> :: iterator __last) {
+    RadialSort<T>(__first, __last);
+    return _ConvexHull<T>(__first, __last);
+}
+
