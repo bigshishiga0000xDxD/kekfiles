@@ -1,5 +1,7 @@
 #include <vector>
-using namespace std;
+
+using std::vector;
+using std::min;
 
 template <typename T>
 struct Sieve {
@@ -14,8 +16,7 @@ struct Sieve {
     vector <T> sigma;    // number of divisors
     vector <T> sigma1;   // sum of divisors
 
-    Sieve(int n) {
-        d = vector <T> (n + 1, -1);
+    Sieve(int n) { d = vector <T> (n + 1, -1);
         p = y = deg = rest = term = phi = sigma = sigma1 = vector <T> (n + 1);
         phi[1] = sigma[1] = 1;
 
@@ -40,6 +41,41 @@ struct Sieve {
             phi[i] = (term[i] - term[i] / p[i]) * phi[rest[i]];
             sigma[i] = sigma[rest[i]] * (deg[i] + 1);
             sigma1[i] = sigma1[rest[i]] * (term[i] * p[i] - 1) / (p[i] - 1);
+        }
+    }
+};
+
+template <int c>  // c is a size of block; should be less than n
+struct BlockSieve {
+    vector <int> primes;
+    vector <int> p = vector <int> (c + 1);
+
+    BlockSieve(int n) {
+        for (int i = 2; i < c; i++) {
+            if (!p[i]) {
+                for (int j = i * i; j < c; j += i) {
+                    p[j] = 1;
+                }
+                primes.push_back(i);
+            }
+        }
+
+        for (int i = c; i <= n; i += c) {
+            fill(p.begin(), p.end(), 0);
+            for (int x : primes) {
+                if (x * x >= i + c) {
+                    break;
+                }
+                int y = ((i + x - 1) / x) * x;
+                for (int j = y; j < min(n + 1, i + c); j += x) {
+                    p[j % c] = 1;
+                }
+            }
+            for (int j = 0; j < c; j++) {
+                if (!p[j] && i + j <= n) {
+                    primes.push_back(i + j);
+                }
+            }
         }
     }
 };

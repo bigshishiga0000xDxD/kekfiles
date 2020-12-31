@@ -1,6 +1,11 @@
+#include <vector>
+
 typedef long long ll;
 const ll INF = 1e18;
 const int M = 1e9 + 1;
+
+using std::min;
+using std::vector;
 
 struct Line {
     ll k, b;

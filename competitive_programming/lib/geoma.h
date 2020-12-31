@@ -1,5 +1,16 @@
-const long double pi = acos(-1);
+#include <iostream>
+#include <cmath>
+#include <ostream>
+#include <string>
+#include <vector>
+
+using std::string;
+using std::istream;
+using std::ostream;
+using std::vector;
+
 const long double eps = 5e-8;
+const long double pi = acos(-1);
 
 template <typename T>
 inline int sign(T x) {

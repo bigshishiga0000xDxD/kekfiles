@@ -1,34 +1,32 @@
-struct treap {
-    private: struct Node {
-        int val, pr, cnt;
-        Node *l, *r;
+#include <random>
+
+using std::mt19937;
+using std::pair;
+
+mt19937 rng(228);
+
+template <typename T>
+struct Treap {
+    struct Node {
+        T val;
+        int pr, cnt = 1;
+        Node *l = nullptr, *r = nullptr;
 
         Node() {}
-        Node(int val) : val(val), pr(rng()), cnt(1), l(nullptr), r(nullptr) {}
+        Node(T val) : val(val), pr(rng()) {}
     };
 
-    private: int get(Node* u) {
-        if (u) {
-            return u->cnt;
-        }
-        else {
-            return 0;        
-        }
+    inline int get(Node* u) {
+        return (u ? u->cnt : 0);
     }
 
-    private: void update(Node* u) {
-        if (u) {
-            u->cnt = get(u->l) + get(u->r) + 1;
-        }
+    inline void update(Node* u) {
+        u->cnt = get(u->l) + get(u->r) + 1;
     }
 
+    Node* root = nullptr;
 
-    private: Node* root;
-    
-    public: treap() : root(nullptr) {}
-
-
-    private: pair <Node*, Node*> split(Node* u, int k) {
+    pair <Node*, Node*> split(Node* u, int k) {
         if (!u) {
             return { nullptr, nullptr };
         }
@@ -50,7 +48,7 @@ struct treap {
         }
     }
 
-    private: Node* merge(Node* u, Node* v) {
+    Node* merge(Node* u, Node* v) {
         if (!u) {
             return v;
         }
@@ -64,7 +62,7 @@ struct treap {
             return u;
         }
         else {
-            v->l = (u, v->l);
+            v->l = merge(u, v->l);
 
             update(v);
             return v;

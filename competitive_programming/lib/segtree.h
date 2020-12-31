@@ -1,66 +1,66 @@
-template <typename T, ll N>
+typedef long long ll;
+
+const int INF = 2e9;
+
+template <typename T, typename V, ll L, ll R>
 struct Tree {
     struct Node {
-        pair <T, T> val;
-        T tl, tr, pos;
-        Node *l, *r;
+        T val;
+        V tl, tr;
+        Node *l = nullptr, *r = nullptr;
 
-        Node(T tl, T tr) : val(make_pair(0, 0)), tl(tl), tr(tr), l(nullptr), r(nullptr) {}
+        Node(V tl, V tr) : val(-INF), tl(tl), tr(tr) {}
     };
 
-    Node* root = new Node(1, N);
+    Node* root = new Node(L, R);
 
-
-    pair <T, T> get(Node* u) {
-        return (u ? u->val : make_pair(0, 0));
+    inline T get(Node* u) {
+        return (u ? u->val : -INF);
     }
 
-    void update(Node* u) {
+    inline void update(Node* u) {
         u->val = max(get(u->l), get(u->r));
     }
 
-    void update(Node *u, T pos, T val) {
+    void update(Node *u, V pos, T val) {
         if (u->tl == u->tr) {
-            u->val = { val, pos };
+            u->val = val;
         }
         else {
-            T tm = (u->tl + u->tr) / 2;
+            V tm = (u->tl + u->tr) / 2;
+            if (u->tl + u->tr < 0) tm--;
 
             if (pos <= tm) {
-                if (!u->l) {
-                    u->l = new Node(u->tl, tm);
-                }
+                if (!u->l) u->l = new Node(u->tl, tm);
                 update(u->l, pos, val);
             }
             else {
-                if (!u->r) {
-                    u->r = new Node(tm + 1, u->tr);
-                }
+                if (!u->r) u->r = new Node(tm + 1, u->tr);
                 update(u->r, pos, val);
             }
             update(u);
         }
     }
 
-    inline void update(T pos, T val) {
+    inline void update(V pos, T val) {
         update(root, pos, val);
     }
 
-    pair <T, T> query(Node *u, T l, T r) {
+    T query(Node *u, V l, V r) {
         if (l > r || !u) {
-            return { 0, 0 };
+            return -INF;
         }
         else if (u->tl == l && u->tr == r) {
             return u->val;
         }
         else {
-            T tm = (u->tl + u->tr) / 2;
+            V tm = (u->tl + u->tr) / 2;
 
             return max(query(u->l, l, min(r, tm)), query(u->r, max(l, tm + 1), r));
         }
     }
 
-    inline pair <T, T> query(T l, T r) {
+    inline T query(V l, V r) {
         return query(root, l, r);
     }
 };

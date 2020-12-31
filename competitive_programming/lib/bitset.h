@@ -1,4 +1,7 @@
-using namespace std;
+#include <algorithm>
+#include <string>
+
+using std::string;
 
 template <size_t N>
 struct Bitset {
@@ -37,16 +40,43 @@ struct Bitset {
         }
         return res;
     }
-};
 
-template <size_t N>
-Bitset<N> operator^(const Bitset<N>& a, const Bitset<N>& b) {
-    Bitset<N> c;
-    for (size_t i = 0; i < (N + 63) / 64; i++) {
-        c.a[i] = a.a[i] ^ b.a[i];
+    Bitset<N>& operator^=(const Bitset<N>& rhs) {
+        for (size_t i = 0; i < (N + 63) / 64; i++) {
+            a[i] ^= rhs.a[i];
+        }
+        return *this;
     }
-    return c;
-}
+
+    friend Bitset<N> operator^(Bitset<N> lhs, const Bitset<N>& rhs) {
+        lhs ^= rhs;
+        return lhs;
+    }
+
+    Bitset<N>& operator|=(const Bitset<N>& rhs) {
+        for (size_t i = 0; i < (N + 63) / 64; i++) {
+            a[i] |= rhs.a[i];
+        }
+        return *this;
+    }
+
+    friend Bitset<N> operator|(Bitset<N> lhs, const Bitset<N>& rhs) {
+        lhs |= rhs;
+        return lhs;
+    }
+
+    Bitset<N>& operator&=(const Bitset<N>& rhs) {
+        for (size_t i = 0; i < (N + 63) / 64; i++) {
+            a[i] &= rhs.a[i];
+        }
+        return *this;
+    }
+
+    friend Bitset<N> operator&(Bitset<N> lhs, const Bitset<N>& rhs) {
+        lhs &= rhs;
+        return lhs;
+    }
+};
 
 template <size_t N>
 bool operator<(const Bitset<N>& a, const Bitset<N>& b) {
