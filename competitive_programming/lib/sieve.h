@@ -16,7 +16,8 @@ struct Sieve {
     vector <T> sigma;    // number of divisors
     vector <T> sigma1;   // sum of divisors
 
-    Sieve(int n) { d = vector <T> (n + 1, -1);
+    Sieve(int n) {
+        d = vector <T> (n + 1, -1);
         p = y = deg = rest = term = phi = sigma = sigma1 = vector <T> (n + 1);
         phi[1] = sigma[1] = 1;
 
