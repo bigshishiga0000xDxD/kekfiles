@@ -2,38 +2,28 @@ typedef long long ll;
 
 template <int N, int MOD>
 struct C {
-    ll fact[N];
+    ll inv[N], fact[N], ifact[N];
 
     C() {
+        inv[1] = 1;
+        for (int i = 2; i < N; i++) {
+            inv[i] = ((-(MOD / i) * inv[MOD % i]) % MOD + MOD) % MOD;
+        }
+
         fact[0] = 1;
         for (int i = 1; i < N; i++) {
-            fact[i] = (fact[i - 1] * i) % MOD;
+            fact[i] = fact[i - 1] * i % MOD;
+        }
+
+        ifact[0] = 1;
+        for (int i = 1; i < N; i++) {
+            ifact[i] = ifact[i - 1] * inv[i] % MOD;
         }
     }
 
-    ll modpow(ll b, ll e) {
-        if (e == 0) {
-            return 1;
-        }
-        if (e % 2) {
-            return (b * modpow(b, e - 1)) % MOD;
-        }
-        else {
-            return modpow((b * b) % MOD, e / 2);
-        }
-    }
-
-    inline ll inv(ll x) {
-        return modpow(x, MOD - 2);
-    }
-
-    ll calc(ll n, ll k) {
-        if (k > n) {
-            return 0;
-        }
-        else {
-            return ((fact[n] * inv(fact[k])) % MOD) * inv(fact[n - k]) % MOD;
-        }
+    inline ll calc(int n, int k) {
+        if (k > n || k < 0) return 0;
+        return fact[n] * ifact[k] % MOD * ifact[n - k] % MOD;
     }
 };
 
