@@ -10,6 +10,7 @@ using std::ostream;
 using std::vector;
 
 const long double eps = 5e-8;
+
 const long double pi = acos(-1);
 
 template <typename T>
@@ -96,7 +97,7 @@ istream& operator>> (istream& in, Point <T>& p) {
 }
  
 template <typename T>
-ostream& operator<< (ostream& out, Point <T>& p) {
+ostream& operator<< (ostream& out, const Point <T>& p) {
     out << p.x << " " << p.y;
     return out;
 }
@@ -119,6 +120,11 @@ struct Vector {
     inline void normalize() {
         auto l = len();
         x /= l, y /= l;
+    }
+
+    void rotate() {
+        swap(x, y);
+        x = -x;
     }
 
     Vector <T> operator-() {
@@ -257,7 +263,7 @@ struct Line {
 };
  
 template <typename T>
-vector <Point <T>> intersect(Line <T>& a, Line <T>& b) {
+vector <Point <T>> intersect(const Line <T>& a, const Line <T>& b) {
     T t = a.a * b.b - b.a * a.b; 
     if (abs(t) < eps) {
         return { };
@@ -362,18 +368,58 @@ vector <Point <T>> convexHull(typename vector <Point <T>> :: iterator __first,
 }
 
 template <typename T>
+Point <T> mid(Point <T> a, Point <T> b) {
+    return Point<T>((a.x + b.x) / 2, (a.y + b.y) / 2);
+}
+
+template <typename T>
+Line <T> perpendicularBisector(Point <T> a, Point <T> b) {
+    Point <T> m = mid(a, b);
+    Vector <T> v(a, b);
+    v.rotate();
+    return Line<T>(m, m + v);
+}
+
+template <typename T>
 struct Circle {
     Point <T> cent;
     long double r;
 
     Circle <T>() {}
-    Circle <T>(Point <T>& _cent, long double _r) : cent(_cent), r(_r) {}
+    Circle <T>(const Point <T>& _cent, long double _r) : cent(_cent), r(_r) {}
     Circle <T>(T x, T y, long double _r) : cent(x, y), r(_r) {}
+    Circle <T>(Point<T> a, Point<T> b, Point<T> c) {
+        if (abs(pscal<T>({ a, b }, { a, c })) < eps) {
+            long double d1 = distance(a, b);
+            long double d2 = distance(a, c);
+            long double d3 = distance(b, c);
+            long double d = max({ d1, d2, d3 });
+
+            if (d == d1) {
+                cent = mid(a, b);
+            }
+            else if (d == d2) {
+                cent = mid(a, c);
+            }
+            else {
+                cent = mid(b, c);
+            }
+        }
+        else {
+            cent = intersect<T>(perpendicularBisector(a, b), perpendicularBisector(b, c)).front();
+        }
+        r = distance(cent, a);
+    }
 
     template <typename V>
-    inline bool belongs(Point <V> p) const {
+    inline bool belongs(const Point <V>& p) const {
         return abs((p.x - cent.x) * (p.x - cent.x) +
                (p.y - cent.y) * (p.y - cent.y) - r * r) < eps;
+    }
+
+    template <typename V>
+    inline bool inside(const Point <V>& p) const {
+        return distance(p, cent) - eps <= r;
     }
 
     inline long double length() const {
@@ -625,5 +671,4 @@ long double lineToLine(Line <T> a, Line <T> b) {
         return 0;
     }
 }
-
 
