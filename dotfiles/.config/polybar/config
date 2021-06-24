@@ -1,0 +1,268 @@
+;==========================================================
+;
+;
+;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
+;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
+;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
+;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
+;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
+;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+;
+;
+;   To learn more about how to configure Polybar
+;   go to https://github.com/polybar/polybar
+;
+;   The README contains a lot of information
+;
+;==========================================================
+
+[settings]
+screenchange-reload = true
+
+[colors]
+background = #262626
+background-alt = #44373e
+foreground = #dfdfdf
+foreground-alt = #555
+color-light = #ef8669
+color-dark = #b05745
+alert = #107996
+
+[bar/bar]
+bottom = true
+
+width = 98%
+height = 23
+offset-x = 1%
+offset-y = 1%
+fixed-center = false
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+# Main font
+font-0 = "UbuntuMono Nerd Font Mono:size=12;1"
+
+# Icon font
+font-1 = "UbuntuMono Nerd Font Mono:size=16;2"
+
+# Separator font
+font-2 = "UbuntuMono Nerd Font Mono:size=40;9"
+
+# Spotify module font
+font-3 = "DejaVu Sans Mono:size=11;1"
+
+modules-left = i3
+modules-center = spotify previous playpause next
+modules-right = wlan pulseaudio separator-light filesystem separator-dark battery separator-light temperature separator-dark xkeyboard separator-light date 
+
+wm-restack = i3
+override-redirect = true
+
+cursor-click = pointer
+
+[module/separator-light]
+type = custom/script
+format = <label>
+format-background = ${colors.color-dark}
+format-foreground = ${colors.color-light}
+format-font = 3
+exec = echo ""
+
+[module/separator-dark]
+type = custom/script
+format = <label>
+format-background = ${colors.color-light}
+format-foreground = ${colors.color-dark}
+format-font = 3
+exec = echo ""
+
+[module/i3]
+type = internal/i3
+format = <label-state>
+index-sort = true
+enable-scroll = false
+wrapping-scroll = false
+
+focused = %{T1}%index%%{T-}
+unfocused = %{T1}%index%%{T-}
+
+; focused = Active workspace on focused monitor
+label-focused = ${self.focused}
+label-focused-background = ${colors.color-light}
+label-focused-foreground = ${colors.foreground-alt}
+label-focused-padding = 2
+
+; unfocused = Inactive workspace on any monitor
+label-unfocused = ${self.unfocused}
+label-unfocused-background = ${colors.color-dark}
+label-unfocused-padding = 2
+
+; urgent = Workspace with urgency hint set
+label-urgent = ${self.unfocused}
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 2
+
+[module/xkeyboard]
+type = internal/xkeyboard
+blacklist-0 = num lock
+blacklist-1 = scroll lock
+
+format = <label-layout><label-indicator>
+
+label-layout = %{T2}%{T-} %layout% ‎
+label-layout-background = ${colors.color-dark}
+label-layout-foreground = ${colors.foreground}
+
+label-indicator-padding = 2
+label-indicator-background = ${self.label-layout-background}
+label-indicator-foreground = ${self.label-layout-foreground}
+
+[module/filesystem]
+type = internal/fs
+interval = 30
+
+mount-0 = /
+
+format-mounted = %{T2}%{T-} <label-mounted> ‎
+format-mounted-background = ${colors.color-light}
+format-mounted-foreground = ${colors.foreground-alt}
+ 
+label-mounted =  %percentage_used%%
+
+[module/wlan]
+type = internal/network
+interface = wlp3s0
+interval = 3.0
+
+format-connected =%{B#262626}%{F#ef8669}%{T3}%{B- F- T-}<label-connected>%{B#ef8669}%{F#b05745} %{T3}%{B- F- T-}
+label-connected = %essid%
+label-connected-background = ${colors.color-light}
+label-connected-foreground = ${colors.foreground-alt}
+
+format-disconnected = 
+format-disconnected-font = 3
+format-disconnected-background = ${colors.background}
+format-disconnected-foreground = ${colors.color-dark}
+
+[module/date]
+type = internal/date
+interval = 5
+
+date = "%m-%d "
+date-alt = 
+
+time = %H:%M
+time-alt = %H:%M:%S
+
+label = %{T2} %{T-}%date%%time% ‎
+label-background = ${colors.color-light}
+label-foreground = ${colors.foreground-alt}
+
+[module/pulseaudio]
+type = internal/pulseaudio
+
+format-volume = %{T2}%{T-} <label-volume> ‎
+format-volume-background = ${colors.color-dark}
+format-volume-foreground = ${colors.foreground}
+
+label-volume = %percentage%%
+
+format-muted = <label-muted> ‎
+format-muted-background = ${self.format-volume-background}
+format-muted-foreground = ${self.format-volume-foreground}
+
+label-muted = ""
+label-muted-font = 2
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+full-at = 98
+
+format-full = %{T2}%{T-} 100% ‎
+format-full-background = ${colors.color-dark}
+format-full-foreground = ${colors.foreground}
+
+format-charging = <animation-charging> <label-charging> ‎
+format-charging-background = ${self.format-full-background}
+format-charging-foreground = ${self.format-full-foreground}
+
+format-discharging = <animation-discharging> <label-discharging> ‎
+format-discharging-background = ${self.format-full-background}
+format-discharging-foreground = ${self.format-full-foreground}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-font = 2
+animation-charging-foreground = ${self.format-full-foreground}
+animation-charging-framerate = 750
+
+animation-discharging-0 = 
+animation-discharging-1 = 
+animation-discharging-2 = 
+animation-discharging-font = 2
+animation-discharging-foreground = ${self.format-full-foreground}
+animation-discharging-framerate = 750
+
+[module/temperature]
+type = internal/temperature
+thermal-zone = 1
+warn-temperature = 90
+
+format = <label>
+format-background = ${colors.color-light}
+format-foreground = ${colors.foreground-alt}
+
+format-warn = <label-warn>
+format-warn-background = ${colors.color-light}
+format-warn-foreground = ${colors.alert}
+
+label = %temperature-c% ‎
+label-warn = %temperature-c% ‎
+
+[module/previous]
+type = custom/script
+interval = 1
+format = "<label>"
+format-font = 2
+format-padding = 1
+exec = echo ""
+exec-if = "pgrep spotify -x"
+line-size = 1
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+
+[module/next]
+type = custom/script
+interval = 1
+format = "<label>"
+format-font = 2
+format-padding = 1
+exec = echo ""
+exec-if = "pgrep spotify -x"
+line-size = 1
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+
+[module/playpause]
+type = custom/script
+format = <label>
+format-font = 2
+format-padding = 1
+exec = echo ""
+initial = 1
+exec-if = "pgrep spotify -x"
+line-size = 1
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+
+[module/spotify]
+type = custom/script
+interval = 1
+format-prefix = " "
+format-prefix-font = 2
+format = <label> %{F#ef8669}|%{F-}
+label-font = 4
+exec = python3 ~/.config/polybar/scripts/spotify/spotify_status.py
+click-left = i3-msg '[class="Spotify"] focus'
+
