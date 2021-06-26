@@ -1,6 +1,8 @@
 #pragma once 
 
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 
 #define debug(x...) std::cout << #x << " = "; _print(x); std::cout << endl;
 
@@ -30,7 +32,7 @@ Ostream& operator<<(Ostream& os, std::deque <T> q) {
     std::vector <T> v;
     while (!q.empty()) {
         v.push_back(q.front());
-        q.pop();
+        q.pop_front();
     }
     os << v;
     return os;

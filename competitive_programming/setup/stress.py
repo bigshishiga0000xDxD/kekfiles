@@ -44,12 +44,31 @@ def generate_string(n, alph):
         res += chr(randint(0, alph - 1) + 97)
     return res
 
+def generate_palindrome(n, alph):
+    s = generate_string(n // 2, alph)
+
+    if n % 2 == 0:
+        return s + s[::-1]
+    else:
+        return s + chr(randint(0, alph - 1) + 97) + s[::-1]
+
+def generate_array(n, l, r):
+    return [randint(l, r) for i in range(n)]
+
+def generate_permutation(n):
+    a = [i for i in range(1, n + 1)]
+    shuffle(a)
+    return a
+
 def generate():
     with open('input.txt', 'w') as fout:
         pass
 
-def check(out, ans):
-    return out == ans
+def check(*args):
+    if len(args) == 2:
+        return args[0] == args[1]
+    else:
+        return args[0] == "Correct\n"
 
 it = 0
 while True:
@@ -58,9 +77,9 @@ while True:
 
     generate()
 
-    out = popen('./main.out < input.txt').read()
-    ans = popen('./dumb.out < input.txt').read()
-    #ret = system('./main.out < input.txt > /dev/null')
+    out = popen('./main < input.txt').read().rstrip()
+    ans = popen('./dumb < input.txt').read().rstrip()
+    #ret = system('./main.py < input.txt > /dev/null')
 
     if not check(out, ans):
         break

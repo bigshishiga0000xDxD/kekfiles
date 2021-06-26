@@ -1,4 +1,4 @@
-﻿//#pragma GCC optimize("Ofast,unroll-loops")
+//#pragma GCC optimize("Ofast,unroll-loops")
  
 #ifdef LOCAL
 #include "debug.h"
@@ -34,6 +34,7 @@ const ld eps = 5e-8;
 const pii dir[] = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
 
+
 signed main() {
 #ifdef LOCAL
     freopen("input.txt", "r", stdin);
@@ -42,7 +43,7 @@ signed main() {
     cout << fixed << setprecision(9);
     ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
 
-
+    cout << 1;
 
     return 0;
 }
