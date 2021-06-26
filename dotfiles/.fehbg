@@ -1,3 +1,3 @@
-#!/bin/sh
+#!/bin/bash
 
-#feh --no-fehbg --bg-fill '/Pictures/Wallpapers/EbO3XNxWAAAvSVw.png' 
+feh --no-fehbg --bg-fill ~/'Pictures/Wallpapers/EbO3XNxWAAAvSVw.png'
