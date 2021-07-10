@@ -4,10 +4,27 @@
 using std::complex;
 using std::vector;
 
-template <typename Base = int>
+
+template <typename Base>
 class PolynomMultiplierCommon {
-    public: static void shrink(vector <Base>& a) {
+    public: static void shrink_zeros(vector <Base>& a) {
         while (!a.empty() && a.back() == 0) a.pop_back();
+    }
+
+    static void shrink_extra(vector <Base>& a, size_t len) {
+        if (a.size() > len) a.resize(len);
+    }
+
+    static size_t get_log(size_t x) {
+        size_t k = 0;
+        while ((static_cast<size_t>(1) << k) < x) k++;
+        return k;
+    }
+
+    static void shift_right(vector <Base>& a, size_t k) {
+        reverse(a.begin(), a.end());
+        a.resize(a.size() + k);
+        reverse(a.begin(), a.end());
     }
 
     template <typename T>
@@ -26,7 +43,7 @@ class PolynomMultiplierCommon {
 
 template <typename Base = int, typename Prec = double>
 class PolynomMultiplier : public PolynomMultiplierCommon<Base> {
-    const Prec pi = acos(-1);
+    const Prec pi = acos(static_cast<Prec>(-1));
     typedef complex<Prec> Complex;
 
     template <typename T>
@@ -54,38 +71,48 @@ class PolynomMultiplier : public PolynomMultiplierCommon<Base> {
         fft(a.data(), ans.data(), wn, a.size(), 1);
     }
 
-    vector <Base> interpolate(vector <Complex>& a, vector <Complex>& tmp) {
+    vector <Base> interpolate(vector <Complex> a, vector <Complex> tmp) {
         size_t n = a.size();
-        fft(a, tmp, polar(1.0, -2 * pi / n));
+        fft(a, tmp, polar(static_cast<Prec>(1.0), -2 * pi / n));
 
         vector <Base> res(n);
         for (size_t i = 0; i < n; i++) {
             res[i] = round(real(tmp[i]) / n);
         }
-        PolynomMultiplierCommon<Base>::shrink(res);
 
         return res;
     }
 
-    public: vector <Base> multiply(vector <Base> a, vector <Base> b) {
-        size_t n = 1;
-        while (n < max(a.size(), b.size())) n <<= 1;
-        n <<= 1;
+     public: vector <Base> multiply(vector <Base>& a, vector <Base>& b) {
+        size_t len = a.size() + b.size() - 1;
+        size_t k = PolynomMultiplierCommon<Base>::get_log(max(a.size(), b.size())) + 1;
+        size_t n = (1 << k);
 
-        a.resize(n), b.resize(n);
+        Complex wn(polar(static_cast<Prec>(1.0), 2 * pi / n));
+        auto fa = get_dft(a, n, wn);
+        auto fb = get_dft(b, n, wn);
 
-        Complex wn(polar(1.0, 2 * pi / n));
-        vector <Complex> fa(n), fb(n);
+        return get_result(move(fa), move(fb), len);
+   }
 
-        fft(a, fa, wn);
-        fft(b, fb, wn);
+    vector <Complex> get_dft(vector <Base> a, size_t n, Complex wn) {
+        a.resize(n);
+        vector <Complex> res(n);
+        fft(a, res, wn);
 
-        vector <Base> res;
+        return res;
+    }
+
+    vector <Base> get_result(vector <Complex> dft1, vector <Complex> dft2, size_t len) {
+        size_t n = dft1.size();
+
         for (size_t i = 0; i < n; i++) {
-            fa[i] *= fb[i];
+            dft1[i] *= dft2[i];
         }
 
-        return interpolate(fa, fb);
+        auto res = interpolate(dft1, dft2);
+        PolynomMultiplierCommon<Base>::shrink_extra(res, len);
+        return res;
     }
 };
 
@@ -93,14 +120,18 @@ class PolynomMultiplier : public PolynomMultiplierCommon<Base> {
 template <typename Base = int>
 class ModPolynomMultiplier : public PolynomMultiplierCommon<Base> {
     static const int MOD = 998244353;
-    Base pws[24];
-    Base inv[24];
+    static const int PW2 = 23;
+    static const int G = 31;          // G ^ (2 ^ PW2) mod MOD = 1; G ^ k mod MOD are distinct, k < 2 ^ PW2
+    static const int INV = 998244234; // (2 ^ PW2) ^ (-1) mod MOD
+
+    Base pws[PW2 + 1];
+    Base inv[PW2 + 1];
 
     public: constexpr ModPolynomMultiplier() {
-        pws[23] = 31;
-        inv[23] = 998244234;
+        pws[PW2] = G;
+        inv[PW2] = INV;
 
-        for (int i = 22; i >= 0; i--) {
+        for (int i = PW2 - 1; i >= 0; i--) {
             pws[i] = 1LL * pws[i + 1] * pws[i + 1] % MOD;
             inv[i] = inv[i + 1] * 2 % MOD;
         }
@@ -117,7 +148,7 @@ class ModPolynomMultiplier : public PolynomMultiplierCommon<Base> {
             Base w = 1;
             for (size_t i = 0; i < n; i++) {
                 Base x = 1LL * w * ans[i + n] % MOD;
-                ans[i + n] = ans[i] - x;
+               ans[i + n] = ans[i] - x;
                 ans[i] += x;
 
                 if (ans[i] >= MOD)  ans[i] -= MOD;
@@ -132,37 +163,45 @@ class ModPolynomMultiplier : public PolynomMultiplierCommon<Base> {
         fft(a.data(), ans.data(), wn, a.size(), 1);
     }
 
-    vector <Base> interpolate(vector <Base>& a, vector <Base>& tmp, Base wn, Base invn) {
+    void interpolate(vector <Base>& a, vector <Base>& res, Base wn, Base invn) {
         size_t n = a.size();
-        fft(a, tmp, wn);
-        reverse(tmp.begin() + 1, tmp.end());
+        fft(a, res, wn);
+        reverse(res.begin() + 1, res.end());
 
-        vector <Base> res(n);
         for (size_t i = 0; i < n; i++) {
-            res[i] = 1LL * tmp[i] * invn % MOD;
+            res[i] = 1LL * res[i] * invn % MOD;
         }
-        PolynomMultiplierCommon<Base>::shrink(res);
+    }
+
+    public: vector <Base> multiply(vector <Base>& a, vector <Base>& b) {
+        size_t len = a.size() + b.size() - 1;
+        size_t k = get_log(max(a.size(), b.size())) + 1;
+
+        auto fa = get_dft(a, k);
+        auto fb = get_dft(b, k);
+
+        return get_result(move(fa), move(fb), k, len);
+   }
+
+    vector <Base> get_dft(vector <Base> a, size_t k) {
+        size_t n = (1 << k);
+
+        a.resize(n);
+        vector <Base> res(n);
+        fft(a, res, pws[k]);
 
         return res;
     }
 
-    public: vector <Base> multiply(vector <Base> a, vector <Base> b) {
-        size_t n = 1, k = 0;
-        while (n < max(a.size(), b.size())) n <<= 1, k++;
-        n <<= 1, k++;
+    vector <Base> get_result(vector <Base> dft1, vector <Base> dft2, size_t k, size_t len) {
+        size_t n = (1 << k);
 
-        a.resize(n), b.resize(n);
-
-        vector <Base> fa(n), fb(n);
-        fft(a, fa, pws[k]);
-        fft(b, fb, pws[k]);
-
-        vector <Base> res;
         for (size_t i = 0; i < n; i++) {
-            fa[i] = 1LL * fa[i] * fb[i] % MOD;
+            dft1[i] = 1LL * dft1[i] * dft2[i] % MOD;
         }
 
-        return interpolate(fa, fb, pws[k], inv[k]);
+        interpolate(dft1, dft2, pws[k], inv[k]);
+        PolynomMultiplierCommon<Base>::shrink_extra(dft2, len);
+        return dft2;
     }
-};
-
+}; 
