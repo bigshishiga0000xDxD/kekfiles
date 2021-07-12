@@ -1,6 +1,6 @@
 set encoding=UTF-8
 
-call plug#begin('~/.config/nvim/plugged')
+call plug#begin('/home/danil/.config/nvim/plugged')
 
 Plug 'morhetz/gruvbox'
 Plug 'itchyny/lightline.vim'
@@ -21,6 +21,7 @@ call plug#end()
 
 syntax enable
 colorscheme gruvbox
+set background=dark
 
 let g:lightline = {
 \ 'colorscheme': 'gruvbox',
@@ -53,6 +54,10 @@ set completeopt-=preview
 " fix c++ lambdas indent
 set cindent
 set cinoptions+=j1,(0,ws,Ws
+
+
+autocmd BufNewFile,BufRead config set filetype=dosini
+
 
 inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O

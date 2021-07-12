@@ -183,5 +183,9 @@ bindsym XF86Calculator exec gnome-calculator
 # toggle systray
 bindsym $mod+t exec ~/.config/i3/scripts/toggle-tray.sh
 
+# brightness control
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10
+
 gaps inner 15
 gaps bottom 30

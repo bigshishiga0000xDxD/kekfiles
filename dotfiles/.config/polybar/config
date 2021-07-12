@@ -40,20 +40,20 @@ fixed-center = false
 background = ${colors.background}
 foreground = ${colors.foreground}
 
-# Main font
+; Main font
 font-0 = "UbuntuMono Nerd Font Mono:size=12;1"
 
-# Icon font
+; Icon font
 font-1 = "UbuntuMono Nerd Font Mono:size=16;2"
 
-# Separator font
+; Separator font
 font-2 = "UbuntuMono Nerd Font Mono:size=40;9"
 
-# Spotify module font
+; Spotify module and mpd font
 font-3 = "DejaVu Sans Mono:size=11;1"
 
 modules-left = i3
-modules-center = spotify previous playpause next
+modules-center = player
 modules-right = wlan pulseaudio separator-light filesystem separator-dark battery separator-light temperature separator-dark xkeyboard separator-light date 
 
 wm-restack = i3
@@ -76,6 +76,21 @@ format-background = ${colors.color-light}
 format-foreground = ${colors.color-dark}
 format-font = 3
 exec = echo ""
+
+
+[module/mpd]
+type = internal/mpd
+format-online = %{T4}<label-song>%{T-}  %{T2}<icon-prev> <toggle> <icon-next>%{T-}
+
+icon-prev = 玲
+icon-stop = 
+icon-play = 
+icon-pause = 
+icon-next = 怜
+
+label-song-maxlen = 35
+label-song-ellipsis = true
+
 
 [module/i3]
 type = internal/i3
@@ -223,46 +238,12 @@ format-warn-foreground = ${colors.alert}
 label = %temperature-c% ‎
 label-warn = %temperature-c% ‎
 
-[module/previous]
-type = custom/script
-interval = 1
-format = "<label>"
-format-font = 2
-format-padding = 1
-exec = echo ""
-exec-if = "pgrep spotify -x"
-line-size = 1
-click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
-
-[module/next]
-type = custom/script
-interval = 1
-format = "<label>"
-format-font = 2
-format-padding = 1
-exec = echo ""
-exec-if = "pgrep spotify -x"
-line-size = 1
-click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
-
-[module/playpause]
+[module/player]
 type = custom/script
 format = <label>
-format-font = 2
-format-padding = 1
-exec = echo ""
-initial = 1
-exec-if = "pgrep spotify -x"
-line-size = 1
-click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+format-font = 4
 
-[module/spotify]
-type = custom/script
-interval = 1
-format-prefix = " "
-format-prefix-font = 2
-format = <label> %{F#ef8669}|%{F-}
-label-font = 4
-exec = python3 ~/.config/polybar/scripts/spotify/spotify_status.py
-click-left = i3-msg '[class="Spotify"] focus'
+label = %output%
+exec = ~/.config/polybar/scripts/player-mpris-tail.py -f '{:artist:t18:{artist}:}{:artist: - :}{:t20:{title}:}  %{A1:~/.config/polybar/scripts/player-mpris-tail.py previous:} 玲%{A} %{A1:~/.config/polybar/scripts/player-mpris-tail.py play-pause:} {icon-reversed}%{A} %{A1:~/.config/polybar/scripts/player-mpris-tail.py next:} 怜%{A}' --icon-playing= --icon-paused=
 
+tail = true
