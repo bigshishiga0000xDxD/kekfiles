@@ -21,9 +21,8 @@ screenchange-reload = true
 
 [colors]
 background = #262626
-background-alt = #44373e
-foreground = #dfdfdf
-foreground-alt = #555
+foreground = #e9e9e9
+foreground-alt = #3a3a3a
 color-light = #ef8669
 color-dark = #b05745
 alert = #107996
@@ -49,7 +48,7 @@ font-1 = "UbuntuMono Nerd Font Mono:size=16;2"
 ; Separator font
 font-2 = "UbuntuMono Nerd Font Mono:size=40;9"
 
-; Spotify module and mpd font
+; Music player font
 font-3 = "DejaVu Sans Mono:size=11;1"
 
 modules-left = i3
@@ -143,14 +142,14 @@ format-mounted = %{T2}%{T-} <label-mounted> ‎
 format-mounted-background = ${colors.color-light}
 format-mounted-foreground = ${colors.foreground-alt}
  
-label-mounted =  %percentage_used%%
+label-mounted = %percentage_used%%
 
 [module/wlan]
 type = internal/network
-interface = wlp3s0
+interface = wlan0
 interval = 3.0
 
-format-connected =%{B#262626}%{F#ef8669}%{T3}%{B- F- T-}<label-connected>%{B#ef8669}%{F#b05745} %{T3}%{B- F- T-}
+format-connected = %{B#262626}%{F#ef8669}%{T3}%{B- F- T-}<label-connected>%{B#ef8669}%{F#b05745} %{T3}%{B- F- T-}
 label-connected = %essid%
 label-connected-background = ${colors.color-light}
 label-connected-foreground = ${colors.foreground-alt}
@@ -162,15 +161,15 @@ format-disconnected-foreground = ${colors.color-dark}
 
 [module/date]
 type = internal/date
-interval = 5
+interval = 1
 
-date = "%m-%d "
-date-alt = 
+date = "%m-%d"
+date-alt = "%a %m-%d"
 
 time = %H:%M
 time-alt = %H:%M:%S
 
-label = %{T2} %{T-}%date%%time% ‎
+label = %{T2} %{T-}%date% %time% ‎
 label-background = ${colors.color-light}
 label-foreground = ${colors.foreground-alt}
 
@@ -194,7 +193,7 @@ label-muted-font = 2
 type = internal/battery
 battery = BAT0
 adapter = AC
-full-at = 98
+full-at = 99
 
 format-full = %{T2}%{T-} 100% ‎
 format-full-background = ${colors.color-dark}
@@ -224,7 +223,7 @@ animation-discharging-framerate = 750
 
 [module/temperature]
 type = internal/temperature
-thermal-zone = 1
+thermal-zone = 0
 warn-temperature = 90
 
 format = <label>
@@ -244,6 +243,6 @@ format = <label>
 format-font = 4
 
 label = %output%
-exec = ~/.config/polybar/scripts/player-mpris-tail.py -f '{:artist:t18:{artist}:}{:artist: - :}{:t20:{title}:}  %{A1:~/.config/polybar/scripts/player-mpris-tail.py previous:} 玲%{A} %{A1:~/.config/polybar/scripts/player-mpris-tail.py play-pause:} {icon-reversed}%{A} %{A1:~/.config/polybar/scripts/player-mpris-tail.py next:} 怜%{A}' --icon-playing= --icon-paused=
+exec = ~/.config/polybar/scripts/player-mpris-tail.py -f '{:artist:t30:{artist}:}{:artist: - :}{:t30:{title}:}  %{A1:~/.config/polybar/scripts/player-mpris-tail.py previous:} 玲%{A} %{A1:~/.config/polybar/scripts/player-mpris-tail.py play-pause:} {icon-reversed}%{A} %{A1:~/.config/polybar/scripts/player-mpris-tail.py next:} 怜%{A}' --icon-playing= --icon-paused=
 
 tail = true

@@ -1,6 +1,6 @@
 set encoding=UTF-8
 
-call plug#begin('/home/danil/.config/nvim/plugged')
+call plug#begin('$HOME/.config/nvim/plugged')
 
 Plug 'morhetz/gruvbox'
 Plug 'itchyny/lightline.vim'
@@ -57,6 +57,8 @@ set cinoptions+=j1,(0,ws,Ws
 
 
 autocmd BufNewFile,BufRead config set filetype=dosini
+autocmd BufNewFile,BufRead .xinitrc set filetype=bash
+autocmd BufNewFile,BufRead *.rules set filetype=udevrules
 
 
 inoremap {<CR> {<CR>}<ESC>O
@@ -74,8 +76,8 @@ imap <C-[> <Esc>`^
 
 
 " use :call Start() to prepare workspace
-" use <F5> to run program
-" use <F6> to clear
+" use Ctrl+x to run program
+" use Ctrl+c to clear
 
 :function Start()
     nnoremap ye <C-W><C-H>
@@ -99,5 +101,5 @@ imap <C-[> <Esc>`^
 :endfunction
 
 
-map <F5> :call Run() <CR>
-map <F6> :call Clear() <CR>
+map <C-x> :call Run() <CR>
+map <C-c> :call Clear() <CR>

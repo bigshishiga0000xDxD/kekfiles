@@ -12,10 +12,10 @@ font:
     style: Italic
 
   normal:
-    family: UbuntuMono Nerd Font Mono
+    family: Ubuntu Mono Nerd FontMono
     style: Regular
 
-  size: 13.0
+  size: 9.5
 
 cursor:
   style: Beam

@@ -148,7 +148,7 @@ class ModPolynomMultiplier : public PolynomMultiplierCommon<Base> {
             Base w = 1;
             for (size_t i = 0; i < n; i++) {
                 Base x = 1LL * w * ans[i + n] % MOD;
-               ans[i + n] = ans[i] - x;
+                ans[i + n] = ans[i] - x;
                 ans[i] += x;
 
                 if (ans[i] >= MOD)  ans[i] -= MOD;
