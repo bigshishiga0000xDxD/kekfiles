@@ -53,7 +53,7 @@ font-3 = "DejaVu Sans Mono:size=11;1"
 
 modules-left = i3
 modules-center = player
-modules-right = wlan pulseaudio separator-light filesystem separator-dark battery separator-light temperature separator-dark xkeyboard separator-light date 
+modules-right = wlan pulseaudio separator-light filesystem separator-dark battery separator-light temperature separator-dark xkeyboard separator-light calendar date 
 
 wm-restack = i3
 override-redirect = true
@@ -159,17 +159,25 @@ format-disconnected-font = 3
 format-disconnected-background = ${colors.background}
 format-disconnected-foreground = ${colors.color-dark}
 
+[module/calendar]
+type = custom/script
+exec = echo %{T2} %{T-}
+click-left = gsimplecal
+
+format-background = ${colors.color-light}
+format-foreground = ${colors.foreground-alt}
+
 [module/date]
 type = internal/date
 interval = 1
 
-date = "%m-%d"
+date = "%d-%m"
 date-alt = "%a %m-%d"
 
 time = %H:%M
 time-alt = %H:%M:%S
 
-label = %{T2} %{T-}%date% %time% ‎
+label = %date% %time% ‎
 label-background = ${colors.color-light}
 label-foreground = ${colors.foreground-alt}
 
