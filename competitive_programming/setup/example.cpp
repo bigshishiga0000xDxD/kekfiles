@@ -1,5 +1,11 @@
+/*
+   Dear God, make it alright
+   Only You can make it alright
+   Dear Lord, make it alright
+   Nothing else ever feels right
+*/
+
 //#pragma GCC optimize("Ofast,unroll-loops")
- 
 #ifdef LOCAL
 #include "debug.h"
 #else
@@ -8,30 +14,31 @@
 #include <ext/pb_ds/tree_policy.hpp>
 #define debug(x...)
 #endif
- 
+
 using namespace std;
- 
+
 //#define int ll
- 
+
 typedef long long ll;
 typedef long double ld;
-typedef pair <int, int> pii;
 #define sz(x) int((x).size())
- 
+
 template <typename T>
-using ordered_set = __gnu_pbds::tree <T, __gnu_pbds::null_type, less<T>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update>;
- 
+using ordered_set =
+    __gnu_pbds::tree<T, __gnu_pbds::null_type, less<T>, __gnu_pbds::rb_tree_tag,
+                     __gnu_pbds::tree_order_statistics_node_update>;
+
 #ifdef ONLINE_JUDGE
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #else
 mt19937 rng(1000 - 7);
 #endif
- 
+
 const int N = 1e5 + 10;
-const ll MOD = 1e9 + 7;
-//const ll MOD = 998244353;
+const int MOD = 1e9 + 7;
+// const int MOD = 998244353;
 const ld eps = 5e-8;
-const pii dir[] = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+const pair<int, int> dir[] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
 
 
@@ -47,4 +54,3 @@ signed main() {
 
     return 0;
 }
-

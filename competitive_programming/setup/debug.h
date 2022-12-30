@@ -4,85 +4,85 @@
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 
-#define debug(x...) std::cout << #x << " = "; _print(x); std::cout << endl;
+#define debug(x...) std::cout << #x << " = ["; _print(x); std::cout << "]" << std::endl;
 
-void _print() {}
-template <typename T, typename... V>
-void _print(T t, V... v) {
-    std::cout << t;
-    if (sizeof...(v)) {
-        std::cout << ", ";
-    }
-    _print(v...);
+template <typename T>
+concept Container = std::is_same_v<T, std::vector<typename T::value_type>> ||
+                    std::is_same_v<T, std::deque<typename T::value_type>> ||
+                    std::is_same_v<T, std::set<typename T::value_type>> ||
+                    std::is_same_v<T, std::unordered_set<typename T::value_type>> ||
+                    std::is_same_v<T, std::multiset<typename T::value_type>> ||
+                    std::is_same_v<T, std::map<typename T::key_type, typename T::mapped_type>> ||
+                    std::is_same_v<T, std::unordered_map<typename T::key_type, typename T::mapped_type>>;
+
+template <Container Iterable>
+std::ostream& operator<<(std::ostream& out, const Iterable& container);
+
+template <typename T, typename V>
+std::ostream& operator<<(std::ostream& out, const std::pair<T, V>& pair);
+
+template <typename... T>
+std::ostream& operator<<(std::ostream& out, std::tuple<T...> tuple);
+
+template <typename T>
+std::ostream& operator<<(std::ostream& out, std::queue<T> queue);
+
+template <typename T, typename V>
+std::ostream& operator<<(std::ostream& out, const std::pair<T, V>& pair) {
+    out << "(" << pair.first << ", " << pair.second << ")";
+    return out;
 }
 
-template <typename Ostream, typename T>
-Ostream& operator<<(Ostream& os, std::queue <T> q) {
-    std::vector <T> v;
-    while (!q.empty()) {
-        v.push_back(q.front());
-        q.pop();
-    }
-    os << v;
-    return os;
-}
-
-template <typename Ostream, typename T>
-Ostream& operator<<(Ostream& os, std::deque <T> q) {
-    std::vector <T> v;
-    while (!q.empty()) {
-        v.push_back(q.front());
-        q.pop_front();
-    }
-    os << v;
-    return os;
-}
-
-template<typename Ostream, typename Cont>
-typename std::enable_if <std::is_same <Ostream, std::ostream>::value, Ostream&>::type 
-operator<<(Ostream& os, const Cont& v){
-    os << "[";
+template <Container Iterable>
+std::ostream& operator<<(std::ostream& out, const Iterable& container) {
+    out << "(";
     bool first = true;
-    
-    for (auto x : v) {
+    for (const auto& elem : container) {
         if (!first) {
-            os << ", ";
+            out << ", ";
         }
-        os << x;
+        out << elem;
         first = false;
     }
-    
-    return os << "]";
+    out << ")";
+    return out;
+}
 
+template <typename T>
+std::ostream& operator<<(std::ostream& out, std::queue<T> queue) {
+    std::vector<T> vector;
+    while (!queue.empty()) {
+        vector.push_back(queue.front());
+        queue.pop();
+    }
+    out << vector;
+    return out;
+}
+
+template <typename... T, std::size_t... Ind>
+void _print_tuple(std::ostream& out, std::tuple<T...> tuple, std::index_sequence<Ind...>) {
+    ((out << (Ind == 0 ? "" : ", ") << std::get<Ind>(tuple)), ...);
+}
+
+template <typename... T>
+std::ostream& operator<<(std::ostream& out, std::tuple<T...> tuple) {
+    out << "(";
+    _print_tuple(out, tuple, std::index_sequence_for<T...>{});
+    out << ")";
+    return out;
 }
 
 
-
-
-template<typename Ostream, typename ...Ts>
-Ostream& operator<<(Ostream& os, const std::pair<Ts...>& p){
-	return os << "{" << p.first << ", " << p.second << "}";
+void _print() {
 }
 
-namespace aux {
-    template <std::size_t...> struct seq{};
-
-    template <std::size_t N, std::size_t... Is>
-    struct gen_seq : gen_seq<N-1, N-1, Is...> {};
-
-    template <std::size_t... Is>
-    struct gen_seq<0, Is...> : seq<Is...> {};
-
-    template <class Ch, class Tr, class Tuple, std::size_t... Is>
-    void print_tuple(std::basic_ostream<Ch,Tr>& os, Tuple const& t, seq<Is...>){
-        using swallow = int[];
-        (void)swallow {0, (void(os << (Is == 0 ?  "" : ", ") << std::get<Is>(t)), 0)...};
+template <typename Head, typename... Tail>
+void _print(Head head, Tail... tail) {
+    std::cout << head;
+    if (sizeof...(Tail)) {
+        std::cout << ", ";
+        _print(tail...);
     }
 }
 
-template<class Ch, class Tr, class... Args>
-auto operator<<(std::basic_ostream<Ch, Tr>& os, std::tuple<Args...> const& t) -> std::basic_ostream<Ch, Tr>& {
-    os << "(";
-    aux::print_tuple(os, t, aux::gen_seq<sizeof...(Args)>());
-    return os << ")";
-}
+
